@@ -1,0 +1,482 @@
+/*----------------------*/
+/*  Reset & Base Setup  */
+/*----------------------*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*----------------------*/
+/*     Backgrounds      */
+/*----------------------*/
+body.typeo {
+  background:
+    radial-gradient(circle, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 1) 100%),
+    linear-gradient(45deg, #003300, #66ff66);
+}
+
+/*----------------------*/
+/*   Keyframe Rules     */
+/*----------------------*/
+/* 1) Float / rotate */
+@keyframes floatnrotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(-1deg);
+  }
+
+  50% {
+    transform: translate(-50%, -45%) rotate(1deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(-1deg);
+  }
+}
+
+/* 2) Drifting highlight */
+@keyframes highlight {
+  0% {
+    --hx: 30%;
+    --hy: 40%;
+  }
+
+  25% {
+    --hx: 70%;
+    --hy: 30%;
+  }
+
+  50% {
+    --hx: 60%;
+    --hy: 70%;
+  }
+
+  75% {
+    --hx: 40%;
+    --hy: 50%;
+  }
+
+  100% {
+    --hx: 30%;
+    --hy: 40%;
+  }
+}
+
+/* 3) Envelope shake (shudder) */
+@keyframes shudder {
+
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotateY(180deg);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translate(calc(-50%+2px), -50%) rotateY(180deg) rotate(1deg);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate(calc(-50%-2px), -50%) rotateY(180deg) rotate(-1deg);
+  }
+}
+
+/*----------------------*/
+/*       Envelope       */
+/*----------------------*/
+.envelope {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 220px;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.05);
+  transition: transform .4s ease-in-out;
+}
+
+.envelope.opened {
+  transform: translate(-50%, -50%) scale(1) rotateY(180deg);
+  transition: transform 1s ease-in-out;
+}
+
+.envelope.scaled {
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.envelope.shudder {
+  animation: shudder 0.6s ease-in-out forwards;
+}
+
+/*----------------------*/
+/*        Front         */
+/*----------------------*/
+.front {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  background: #fff;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  backface-visibility: hidden;
+  z-index: 100;
+  overflow: hidden;
+  /* clip shine if you ever add it here */
+}
+
+.front.opened {
+  z-index: 2
+}
+
+.front p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Alex Brush';
+  font-size: 40px;
+  font-style: italic;
+  font-weight: 700;
+  color: #2c2c2c;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/*----------------------*/
+/*     Flap + Foil      */
+/*----------------------*/
+.flap {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 0 20%, 50% 70%, 100% 20%, 100% 0);
+  background: #f2f2f2;
+  border-bottom: 2px solid #3c2f2a;
+  transform-origin: top center;
+  transform-style: preserve-3d;
+  transition: transform .4s ease-in-out;
+  backface-visibility: visible;
+  z-index: 6;
+}
+
+.flap .foil {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(7.5% 0%, 7.5% 20%, 50% 62.5%, 92.5% 20%, 92.5% 0);
+  background: #D34545;
+  background-size: 100% 100%;
+  backface-visibility: hidden;
+  transform-origin: top center;
+  transition: transform .4s ease-in-out, opacity .4s;
+  opacity: 0;
+  z-index: 5;
+}
+
+.flap.openedflip {
+  transform: rotateX(-180deg);
+}
+
+.flap.openedflip .foil {
+  transform: rotateX(0deg);
+}
+
+.flap.openedflipshow .foil {
+  opacity: 1;
+}
+
+.flap.openedflipmoveback {
+  z-index: 1;
+}
+
+.flap.openedflipmoveback .foil {
+  z-index: 2;
+}
+
+/*----------------------*/
+/*        Back          */
+/*----------------------*/
+.back {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+  background: #fff;
+  backface-visibility: visible;
+  transform: rotateY(180deg);
+  z-index: 1;
+  background-image:
+    linear-gradient(to top left, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(to top right, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 50% 50%;
+  background-position: bottom right, bottom left;
+  background-repeat: no-repeat;
+  border: 2px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.back.opened {
+  transform: rotateY(0);
+  z-index: 4;
+}
+
+/* fold-triangle */
+.back-fold {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(0 100%, 50% 50%, 100% 100%);
+  background: #f5f5f5;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  z-index: 2;
+}
+
+/*----------------------*/
+/*    Secondary Foil2   */
+/*----------------------*/
+.foil2 {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  background: #A23A3A;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transition: opacity .4s;
+  backface-visibility: visible;
+  z-index: 5;
+}
+
+.foil2.opened {
+  opacity: 1;
+  z-index: 2;
+}
+
+/*----------------------*/
+/*        Note          */
+/*----------------------*/
+.note {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 180px;
+  height: 254px;
+  padding: 10px;
+  background: #fff4eb;
+  border: 1px solid #3c2f2a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translate(-50%, 100%) scaleY(0) rotateY(180deg);
+  transform-origin: top center;
+  opacity: 0;
+  z-index: 3;
+  transition: transform 0.6s ease-in-out, opacity 0.4s ease-in-out;
+}
+
+.note.visible {
+  transform: translate(-50%, 0) scaleY(1) rotateY(180deg);
+  opacity: 1;
+}
+
+.note.out {
+  transform: translate(-50%, -1500%) scaleY(0) rotateY(180deg);
+  opacity: 0;
+}
+
+/*----------------------*/
+/*   Jumpscare Overlay  */
+/*----------------------*/
+#jumpscare {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0);
+  transition: transform .05s ease-in-out, opacity 1s forwards;
+  z-index: 9999;
+}
+
+#jumpscare.show {
+  transform: scale(1);
+  opacity: 0.75;
+}
+
+/*----------------------*/
+/*    Floaty Wrapper    */
+/*----------------------*/
+.floaty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 220px;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  /* drifting highlight */
+  background: radial-gradient(circle at var(--hx, 40%) var(--hy, 30%),
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0) 60%);
+  background-repeat: no-repeat;
+  background-size: 200% 200%;
+  /* float + highlight */
+  animation:
+    floatnrotate 3s ease-in-out infinite,
+    highlight 6s ease-in-out infinite alternate;
+}
+
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: -80%;
+  /* start way off the left edge */
+  width: 10%;
+  height: 100%;
+  background: rgb(255, 255, 255, 0.3);
+  transform: skewX(-25deg);
+  filter: blur(6px);
+  pointer-events: none;
+  /* lower than the <p> so your text stays on top */
+  z-index: 90;
+  animation: sweep 14s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0% {
+    left: 0%;
+  }
+
+  20% {
+    left: 80%;
+  }
+
+  50% {
+    left: 120%;
+  }
+
+  80% {
+    left: 160%;
+  }
+
+  100% {
+    left: 180%;
+  }
+}
+
+
+/* intro modal overlay */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  /* above everything */
+}
+
+/* intro modal box */
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  font-size: 1rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.modal-content button {
+  display: block;
+  margin: 1.5rem auto 0;
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  background: #003300;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* PDF Viewer */
+.pdf-viewer {
+  padding: 0;
+  max-width: 90vw;
+  max-height: 90vh;
+  position: relative;
+  overflow: visible;
+}
+
+.pdf-header {
+  display: flex;
+  gap: 1rem;
+  padding: .75rem;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+}
+
+.pdf-header button {
+  background: #063;
+  color: #fff;
+  border: none;
+  padding: .5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pdf-header button#pdfClose {
+  margin-left: auto;
+}
+
+/* PDF Viewer */
+.pdf-viewer { padding:0; max-width:90vw; max-height:90vh; position:relative; overflow:visible; }
+.pdf-header { display:flex; gap:1rem; padding:.75rem; background:#f5f5f5; border-bottom:1px solid #ccc; }
+.pdf-header button { background:#063; color:#fff; border:none; padding:.5rem 1rem; border-radius:4px; cursor:pointer; }
+.pdf-header button#pdfClose { margin-left:auto; }
+#pdfViewer { overflow-y:auto; overflow-x:hidden; height:calc(100vh - 3rem); padding:1rem; background:#fafafa; }
+#pdfViewer canvas { display:block; margin:0 auto 1rem; max-width:100%; height:auto; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+
+/* Response Modal */
+#responseModal .modal-content { max-width:300px; text-align:center; position:relative; }
+#responseModal .close-button { position:absolute; top:.5rem; right:.5rem; background:transparent; border:none; font-size:1.2rem; cursor:pointer; }
+#responseModal .response-buttons { display:flex; flex-direction:column; gap:.5rem; margin-top:1rem; }
+#responseModal .response-buttons button { padding:.5rem; border:none; background:#046; color:#fff; border-radius:4px; cursor:pointer; }

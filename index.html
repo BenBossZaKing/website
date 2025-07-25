@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Envelope Reveal</title>
+  <link href="https://fonts.googleapis.com/css?family=Alex+Brush" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="typeo">
+  <div id="adminNotice"></div>
+
+  <div id="passwordModal" class="modal" style="display:flex">
+    <div class="modal-content">
+      <p>This site is private. Enter password:</p>
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <button id="passwordSubmit">Unlock</button>
+      <p id="passwordError" style="color:red; display:none">Wrong password</p>
+    </div>
+  </div>
+
+  <div id="versionModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <p>Choose which version to view:</p>
+      <button class="version-button" data-version="to">July 14th Version</button>
+      <button class="version-button" data-version="from">July 23rd “Post-Trip” Version</button>
+    </div>
+  </div>
+
+  <div id="introModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <p id="introText"></p>
+      <button id="introOk">Continue</button>
+    </div>
+  </div>
+
+  <img id="jumpscare" src="CINEMA.jpg" alt="" />
+  <audio id="bg-audio" src="Strangers.m4a" loop></audio>
+  <div class="floaty">
+    <div class="container">
+      <div class="envelope" id="envelope">
+        <div class="front" id="front">
+          <p class="envelope-name">Abby</p>
+        </div>
+        <div class="shimmer"></div>
+        <div class="back" id="back">
+          <div class="back-fold"></div>
+        </div>
+        <div class="flap" id="flap">
+          <div class="flapshimmer"></div>
+          <div class="foil" id="foil"></div>
+        </div>
+        <div class="foil2" id="foil2"></div>
+        <div class="note" id="note"></div>
+      </div>
+      <div class="subtext">
+        <p>Open?</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="pdfContainer" class="modal" style="display:none">
+    <div class="modal-content pdf-viewer">
+      <div class="pdf-header">
+        <button id="replyButton">✉️ Reply to Ben</button>
+        <!--<button id="shareButton">🔗 Copy Link</button> -->
+        <button id="pdfClose">✖️ Close</button>
+      </div>
+      <div id="pdfViewer"></div>
+    </div>
+  </div>
+
+  <div id="responseModal" class="modal" style="display:none">
+    <div class="modal-content">
+      <button id="closeResponseModal" class="close-button">✖️</button>
+      <p>How would you like to reply?</p>
+      <div class="response-buttons">
+        <button data-method="text">Text Message</button>
+        <button data-method="snapchat">Snapchat</button>
+        <button data-method="instagram">Instagram</button>
+       <!-- <button data-method="discord">Discord</button>-->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.9.179/pdf.worker.min.js';
+  </script>
+  <script src="script.js"></script>
+</body>
+
+</html>
