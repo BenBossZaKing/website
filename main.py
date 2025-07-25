@@ -15,6 +15,20 @@ def log_cj():
     print(f"CJ access logged at {now}")
     return 'Logged', 200
 
+@app.route('/logAbbyAccess', methods=['POST'])
+def log_abby():
+    now = datetime.now().isoformat()
+    ip = request.remote_addr
+    ua = request.headers.get("User-Agent", "Unknown")
+    
+    os.makedirs("logs", exist_ok=True)  # ensure logs directory exists
+    
+    with open("logs/abbyAccessLog.txt", "a") as f:
+        f.write(f"Abby opened site at {now} from {ip} with UA: {ua}\n")
+    
+    print(f"Abby access logged at {now}")
+    return 'Logged Abby', 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3000)
