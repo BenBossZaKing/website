@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector(".envelope-name").textContent = "CJ";
       adminNotice.style.display = "none";
 
-      introTextEl.innerHTML = "You beat me. And if you're reading this, I still want you.<br/><br/>Now open it.";
+      introTextEl.innerHTML = "And if you're reading this, I still want you. And if any part of you still wants me to bend you over my amp and make out untill we bleed and then fuck on the air matress until it pops...<br/><br/> open it.";
       note.textContent = "";
       introModal.style.display = "flex";
     }
